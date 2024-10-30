@@ -1,5 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+
+
 function NavBar() {
   const { currentUser } = useAuth();
 
@@ -19,9 +21,11 @@ function NavBar() {
               <button className="mr-4 shadow-md rounded-md p-2 text-lg ">
                 <Link to="/logout">Logout</Link>
               </button>
+              
               <button className="mr-4 shadow-md rounded-[100%] p-2 text-lg  ">
                 <Link to="/profile">Profile</Link>
               </button>
+            
             </>
           ) : (
             <>
