@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import Logout from "./components/Logout";
 import RouteMap from "./components/RouteMap";
 import ProtectedRoute from "./components/ProtectedRoute";
+// import CreateRoute from "./firebaseServices/createRouteComponent";
 
 function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ function AppRoutes() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/routemap" element={<RouteMap />} />
         <Route path="/routes" element={<RoutesList />} />
+        {/* <Route path="/create-route" element={<CreateRoute />} /> */}
         <Route
           path="/"
           element={

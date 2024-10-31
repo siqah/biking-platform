@@ -12,13 +12,14 @@ function Login() {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/"); // Redirect to the dashboard
       console.log("Login successful!");
+      navigate("/"); // Redirect to the dashboard
     } catch (error) {
-      alert(error.message);
-      console.error(error);
+      alert("Login failed: " + error.message);
+      console.error("Login error:", error);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -57,6 +58,13 @@ function Login() {
           >
             Login
           </button>
+          <p className="flex justify-center mt-2">or</p>
+          <p className="flex justify-center">
+            Don’t have an account?{" "}
+            <a href="/signup" className="text-blue-600 ml-1">
+              Sign up here
+            </a>
+          </p>
         </form>
       </div>
     </div>

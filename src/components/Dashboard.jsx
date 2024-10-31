@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import NavBar from "./NavBar";
 import RouteMap from "./RouteMap";
+import Chat from "./Chat";
 
 function Dashboard() {
   const { currentUser } = useAuth();
@@ -24,6 +25,8 @@ function Dashboard() {
       <p>Your recent rides will appear here.</p>
       <h3 className="text-lg font-semibold mt-4">Your Rides</h3>
       <RouteMap routeCoordinates={routeCoordinates} />
+      <Chat user1Id={currentUser.id} user2Id="user2-id" />
+
       
     </>
   );

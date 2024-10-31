@@ -1,7 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
-
 function NavBar() {
   const { currentUser } = useAuth();
 
@@ -15,17 +14,19 @@ function NavBar() {
             </Link>
           </button>
         </ul>
-        <ul className="flex flex-row justify-between mb-2">
+        <ul className="flex flex-row justify-between items-center mb-2">
           {currentUser ? (
             <>
-              <button className="mr-4 shadow-md rounded-md p-2 text-lg ">
-                <Link to="/logout">Logout</Link>
+
+              <button className="mr-2 mt-2" >
+                <Link to="/profile">
+                  <img
+                    src={currentUser.photoURL}
+                    alt="Profile"
+                    className="w-14  h-14 rounded-full mr-4 p-2"
+                  />
+                </Link>
               </button>
-              
-              <button className="mr-4 shadow-md rounded-[100%] p-2 text-lg  ">
-                <Link to="/profile">Profile</Link>
-              </button>
-            
             </>
           ) : (
             <>
