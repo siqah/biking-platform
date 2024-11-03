@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,14 +12,13 @@ function Login() {
     e.preventDefault();
     try {
       await login(email, password);
-      console.log("Login successful!");
       navigate("/"); // Redirect to the dashboard
+      console.log("Login successful!");
     } catch (error) {
       alert("Login failed: " + error.message);
       console.error("Login error:", error);
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -38,6 +37,7 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
               required
+              autoComplete="email"
             />
           </div>
           <div>
@@ -50,20 +50,18 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
               required
+              autoComplete="current-password"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 mt-4 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
-          >
+          <button type="submit" className="w-full py-2 mt-4 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
             Login
           </button>
           <p className="flex justify-center mt-2">or</p>
           <p className="flex justify-center">
             Don’t have an account?{" "}
-            <a href="/signup" className="text-blue-600 ml-1">
+            <Link to="/signup" className="text-blue-600 ml-1">
               Sign up here
-            </a>
+            </Link>
           </p>
         </form>
       </div>

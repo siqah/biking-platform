@@ -49,33 +49,51 @@ export function AuthProvider({ children }) {
   const signup = async (name, email, password, profilePicture) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-
-    // Upload profile picture if provided
+  
     let profilePictureUrl = '';
     if (profilePicture) {
       const profilePicRef = ref(storage, `profilePictures/${user.uid}`);
       await uploadBytes(profilePicRef, profilePicture);
       profilePictureUrl = await getDownloadURL(profilePicRef);
     }
-
-    // Set profile display name in Firebase Auth
+  
     await updateProfile(user, { displayName: name, photoURL: profilePictureUrl });
-
-    // Store user profile in Firestore
-    await setDoc(doc(db, "users", user.uid), {
+  
+    const userProfile = {
       name,
       email,
       profilePictureUrl,
       routes: [],
       createdAt: new Date(),
-    });
-
-    setCurrentUser({ ...user, displayName: name, photoURL: profilePictureUrl });
-    localStorage.setItem("currentUser", JSON.stringify({ ...user, displayName: name, photoURL: profilePictureUrl }));
+    };
+  
+    await setDoc(doc(db, "users", user.uid), userProfile);
+  
+    setCurrentUser({ ...user, ...userProfile });
+    localStorage.setItem("currentUser", JSON.stringify({ ...user, ...userProfile }));
   };
+  
 
-  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
-
+  const login = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // Fetch user profile data from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setCurrentUser({ ...user, ...userData });
+        localStorage.setItem("currentUser", JSON.stringify({ ...user, ...userData }));
+      }
+      return user; 
+    } catch (error) {
+      console.error("Login error:", error.message);
+      throw error; 
+    }
+  };
+  
+  
   const logout = () => {
     localStorage.removeItem("currentUser");
     return signOut(auth);

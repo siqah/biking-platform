@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -34,10 +34,7 @@ function Signup() {
         <h2 className="text-2xl font-semibold text-center mb-6">Signup</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Name
             </label>
             <input
@@ -50,10 +47,7 @@ function Signup() {
             />
           </div>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email
             </label>
             <input
@@ -63,13 +57,11 @@ function Signup() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              autoComplete="email"
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
             <input
@@ -79,13 +71,11 @@ function Signup() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              autoComplete="new-password"
             />
           </div>
           <div>
-            <label
-              htmlFor="profilePicture"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700 mb-1">
               Profile Picture
             </label>
             <input
@@ -95,17 +85,14 @@ function Signup() {
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors duration-200"
-          >
+          <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors duration-200">
             Signup
           </button>
           <p className="text-sm text-gray-600 text-center">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-600">
+            <Link to="/login" className="text-blue-600">
               Login
-            </a>
+            </Link>
           </p>
         </form>
       </div>
