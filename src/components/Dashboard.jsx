@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import NavBar from "./NavBar";
 // import Chat from "./Chat";
-import ParentComponent from "./parentComponent";
+import ParentComponent from "./mainMap/ParentComponent";
 
 // import RaceMap from './RaceMap';
 // import LivePositionUpdater from './LivePositionUpdater';

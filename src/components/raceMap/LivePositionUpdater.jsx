@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { ref, set } from 'firebase/database';
-import { database } from '../firebase-config';
-import { useAuth } from "../context/AuthContext";
+import { database } from '../../firebase-config';
+import { useAuth } from "../../context/AuthContext";
 
 const LivePositionUpdater = () => {
   const { currentUser } = useAuth();

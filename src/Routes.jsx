@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
 import Profile from "./components/Profile";
-import RoutesList from "./components/RoutesList";
+import RoutesList from "./components/mainMap/RoutesList";
 import Dashboard from "./components/Dashboard";
-import Logout from "./components/Logout";
-import RouteMap from "./components/RouteMap";
+import Logout from "./components/auth/Logout";
+import RouteMap from "./components/mainMap/RouteMap";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppRoutes() {
