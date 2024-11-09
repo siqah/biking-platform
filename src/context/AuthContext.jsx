@@ -1,17 +1,17 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useEffect, useState } from 'react';
-import { auth, db, storage, database } from '../firebase-config';
-import { set, onDisconnect, ref as dbRef } from 'firebase/database';
+import { createContext, useContext, useEffect, useState } from "react";
+import { auth, db, database } from "../firebase-config";
+import { set, onDisconnect, ref as dbRef } from "firebase/database";
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore";
+
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   updateProfile,
-} from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+} from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -44,6 +44,21 @@ export function AuthProvider({ children }) {
     }
   };
 
+  async function saveUserProfile(user) {
+    const db = getFirestore();
+    const userRef = doc(db, "users", user.uid);
+
+    await setDoc(
+      userRef,
+      {
+        uid: user.uid,
+        displayName: user.displayName || "Anonymous",
+        photoURL: user.photoURL || "",
+      },
+      { merge: true }
+    );
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -57,6 +72,7 @@ export function AuthProvider({ children }) {
           } else {
             // Assign race number for new users
             await assignRaceNumber(user.uid);
+            saveUserProfile();
           }
 
           const updatedUser = { ...user, ...userData };
@@ -75,51 +91,51 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Signup with profile picture upload
-    const signup = async (name, email, password, profilePicture) => {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential?.user;
-        if (!user) throw new Error("User is undefined");
-    
-        let profilePictureUrl = '';
-        if (profilePicture) {
-          const profilePicRef = ref(storage, `profilePictures/${user.uid}`);
-          await uploadBytes(profilePicRef, profilePicture);
-          profilePictureUrl = await getDownloadURL(profilePicRef);
-        }
-    
-        await updateProfile(user, { displayName: name, photoURL: profilePictureUrl });
-    
-        const userProfile = {
-          name,
-          email,
-          profilePictureUrl,
-          routes: [],
-          createdAt: new Date(),
-        };
-    
-        await setDoc(doc(db, "users", user.uid), userProfile);
-        const updatedUser = { ...user, ...userProfile };
-        setCurrentUser(updatedUser);
-        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-    
-        // Assign race number for the new user
-        await assignRaceNumber(user.uid);
-      } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-          console.error("Email already in use. Please use a different email.");
-          alert("The email address is already in use. Please use a different email.");
-        } else {
-          console.error("Signup error:", error);
-        }
-        throw error;
+  const signup = async (name, email, password) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential?.user;
+      if (!user) throw new Error("User is undefined");
+
+      await updateProfile(user, { displayName: name });
+
+      const userProfile = {
+        name,
+        email,
+        createdAt: new Date(),
+      };
+
+      await setDoc(doc(db, "users", user.uid), userProfile);
+      const updatedUser = { ...user, ...userProfile };
+      setCurrentUser(updatedUser);
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+      // Assign race number for the new user
+      await assignRaceNumber(user.uid);
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        console.error("Email already in use. Please use a different email.");
+        alert(
+          "The email address is already in use. Please use a different email."
+        );
+      } else {
+        console.error("Signup error:", error);
       }
-    };
-    
+      throw error;
+    }
+  };
 
   const login = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential?.user;
       if (!user) throw new Error("User is undefined");
 

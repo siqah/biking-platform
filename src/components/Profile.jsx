@@ -2,42 +2,62 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase-config";
 
 const Profile = () => {
   const { currentUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [displayName, setDisplayName] = useState(currentUser.displayName || "");
+  const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
   const [profilePicture, setProfilePicture] = useState(null);
-  const [profilePictureURL, setProfilePictureURL] = useState(currentUser.photoURL);
+  const [profilePictureURL, setProfilePictureURL] = useState(currentUser?.photoURL || "");
 
+  // Upload profile picture and set its URL
   useEffect(() => {
     if (profilePicture) {
       const storage = getStorage();
       const storageRef = ref(storage, `profilePictures/${currentUser.uid}`);
+
       uploadBytes(storageRef, profilePicture).then(() => {
         getDownloadURL(storageRef).then((url) => {
           setProfilePictureURL(url);
+          updateUserProfile(currentUser.uid, { photoURL: url }); // Update Firestore with the new URL
         });
       });
     }
-  }, [profilePicture, currentUser.uid]);
+  }, [profilePicture, currentUser?.uid]);
+
+  async function updateUserProfile(userId, profileData) {
+    const userRef = doc(db, "users", userId);
+
+    try {
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        await updateDoc(userRef, profileData);
+      } else {
+        await setDoc(userRef, profileData);
+      }
+      console.log("User profile updated or created successfully.");
+    } catch (error) {
+      console.error("Error updating or creating user profile:", error);
+    }
+  }
 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setProfilePicture(file);
-    }
+    if (file) setProfilePicture(file);
   };
 
   const handleSaveChanges = async () => {
-    const db = getFirestore();
-    const userDoc = doc(db, "users", currentUser.uid);
-    await updateDoc(userDoc, {
-      displayName: displayName,
-      photoURL: profilePictureURL,
-    });
-    setIsEditing(false); // Exit edit mode after saving changes
+    try {
+      await updateUserProfile(currentUser.uid, {
+        displayName: displayName,
+        photoURL: profilePictureURL,
+      });
+      setIsEditing(false); // Exit edit mode after saving changes
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
   };
 
   return (
@@ -48,15 +68,12 @@ const Profile = () => {
             // Edit Profile Section
             <>
               <div className="flex justify-between items-center">
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-blue-500"
-                >
+                <button onClick={() => setIsEditing(false)} className="text-blue-500">
                   Cancel
                 </button>
               </div>
               <img
-                src={profilePictureURL}
+                src={profilePictureURL || "/default-avatar.png"}
                 alt="Profile"
                 className="w-32 h-32 mx-auto rounded-full my-4"
               />
@@ -82,16 +99,14 @@ const Profile = () => {
           ) : (
             // View Profile Section
             <>
-            <div className="flex justify-between">
-            <button className="mr-4 shadow-md rounded-md p-1 text-lg ">
-                <Link to="/">HOME</Link>
-              </button>
-
-              <button className="mr-4 shadow-md rounded-md p-2 text-lg ">
-                <Link to="/loginout">LOGOUT</Link>
-              </button>
-             
-            </div>
+              <div className="flex justify-between">
+                <button className="mr-4 shadow-md rounded-md p-1 text-lg ">
+                  <Link to="/">HOME</Link>
+                </button>
+                <button className="mr-4 shadow-md rounded-md p-2 text-lg ">
+                  <Link to="/logout">LOGOUT</Link>
+                </button>
+              </div>
               <img
                 src={profilePictureURL || "/default-avatar.png"}
                 alt="Profile"

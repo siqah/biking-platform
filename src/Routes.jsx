@@ -7,6 +7,8 @@ import Dashboard from "./components/Dashboard";
 import Logout from "./components/auth/Logout";
 import RouteMap from "./components/mainMap/RouteMap";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Chat2 from "./components/messaging/Chat2";
+// import Chat from "./components/messaging/Chat";
 
 function AppRoutes() {
   return (
@@ -18,6 +20,8 @@ function AppRoutes() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/routemap" element={<RouteMap />} />
         <Route path="/routes" element={<RoutesList />} />
+        {/* <Route path="/chat" element={<Chat/>} /> */}
+        <Route path="/chat2" element={<Chat2 />} />
         <Route
           path="/"
           element={
