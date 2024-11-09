@@ -11,5 +11,6 @@ export default defineConfig({
   esbuild: {
     loader: 'jsx',
     include: /src\/.*\.(js|jsx)$/, // Match both .js and .jsx files in the src directory
+    
   },
 });

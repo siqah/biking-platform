@@ -17,8 +17,10 @@ function NavBar() {
         <ul className="flex flex-row justify-between items-center mb-2">
           {currentUser ? (
             <>
-
-              <button className="mr-2 mt-2" >
+              <button className="mr-4 shadow-md rounded-md p-1 text-lg ">
+                <Link to="/chat2">Chat</Link>
+              </button>
+              <button className="mr-2 mt-2">
                 <Link to="/profile">
                   <img
                     src={currentUser.photoURL}

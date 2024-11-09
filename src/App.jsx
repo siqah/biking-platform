@@ -1,5 +1,6 @@
-import Dashboard from "./components/Dashboard";
+// import Dashboard from "./components/Dashboard";
 import AppRoutes from "./Routes";
+import Dashboard from "./components/Dashboard";
 
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <>
       <AppRoutes>
         <Dashboard />
+        
       </AppRoutes>
     </>
   );

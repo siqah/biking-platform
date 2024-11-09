@@ -1,32 +1,34 @@
+import { useEffect } from "react";
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [profilePicture, setProfilePicture] = useState(null);
-  const { signup } = useAuth();
+  const { signup, currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfilePicture(file);
-    }
-  };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signup(name, email, password, profilePicture);
-      navigate("/");
+      await signup(name, email, password);
       console.log("Signup successful!");
     } catch (error) {
       alert(error.message);
     }
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser, navigate]);
+
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -74,17 +76,7 @@ function Signup() {
               autoComplete="new-password"
             />
           </div>
-          <div>
-            <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700 mb-1">
-              Profile Picture
-            </label>
-            <input
-              type="file"
-              id="profilePicture"
-              onChange={handleProfilePictureChange}
-              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+         
           <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors duration-200">
             Signup
           </button>
